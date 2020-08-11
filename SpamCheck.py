@@ -24,9 +24,9 @@ def knn(X_train, X_test, y_train, y_test):
                 target_pred = model.predict(X_test)
                 res = metrics.accuracy_score(y_test, target_pred)
             if res > max:
-                max = res
-                numOfNeighbors = i
-                p = j
+                max = res           # best result
+                numOfNeighbors = i  # best number of neighbors
+                p = j               # best distance method
 
     if p == 1:
         metric = "manhattan"
@@ -34,6 +34,7 @@ def knn(X_train, X_test, y_train, y_test):
         metric = "euclidian"
 
     print("KNN accuracy:", max, " number of neighbors:", numOfNeighbors, "\n\t\t\t  using metric:", metric)
+
 
 def svm(X_train, X_test, y_train, y_test):
     svcSigmoid = SVC(kernel='sigmoid')
@@ -47,8 +48,8 @@ def svm(X_train, X_test, y_train, y_test):
         target_pred = model.predict(X_test)
         res = metrics.accuracy_score(y_test, target_pred)
         if res > max:
-            max = res
-            maxModel = type.kernel
+            max = res                   # best result
+            maxModel = type.kernel      # best model
 
     print("SVM accuracy:", max, " in model:", maxModel)
 
@@ -63,12 +64,14 @@ def adaboost(X_train, X_test, y_train, y_test):
 def run(file):
     data = pd.read_csv(file, encoding='latin-1')
 
+    # filter stop words, punctuation and ignore capital letter
     f = feature_extraction.text.CountVectorizer(stop_words = 'english')
-
     X = f.fit_transform(data["message"])
 
+    # split the data to test set and train set
     X_train, X_test, y_train, y_test = model_selection.train_test_split(X, data['label'], test_size=0.33)
 
+    # sends the sets to the machine learning algorithms
     adaboost(X_train, X_test, y_train, y_test)
     svm(X_train, X_test, y_train, y_test)
     knn(X_train, X_test, y_train, y_test)
